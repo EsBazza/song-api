@@ -1,4 +1,4 @@
-package com.velasco.song;
+package com.alonzo.song;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(path="/velasco/songs")
+@RequestMapping(path="/alonzo/songs")
 public class SongController {
     @Autowired
     private SongRepository songRepository;
 
     @PostMapping
-    public ResponseEntity createSong(@RequestBody Song song) throws URISyntaxException {
+    public ResponseEntity<Song> createSong(@RequestBody Song song) throws URISyntaxException {
         Song savedSong = songRepository.save(song);
         return ResponseEntity.ok()
-                .location(new URI("/garcia/songs/" + savedSong.getId()))
+                .location(new URI("/alonzo/songs/" + savedSong.getId()))
                 .body(savedSong);
     }
 
@@ -51,7 +51,6 @@ public class SongController {
 
         Song songToUpdate = targetSong.get();
 
-        // Updating all required fields
         songToUpdate.setTitle(songDetails.getTitle());
         songToUpdate.setArtist(songDetails.getArtist());
         songToUpdate.setAlbum(songDetails.getAlbum());
@@ -78,7 +77,6 @@ public class SongController {
 
     @GetMapping("/search/{keyword}")
     @ResponseBody
-    // 2. Changed @RequestParam to @PathVariable
     public ResponseEntity<List<Song>> searchSongs(@PathVariable String keyword) {
         List<Song> results = songRepository.findByTitleContainingIgnoreCaseOrArtistContainingIgnoreCaseOrAlbumContainingIgnoreCaseOrGenreContainingIgnoreCase(
                 keyword, keyword, keyword, keyword

@@ -1,4 +1,4 @@
-package com.velasco.song;
+package com.alonzo.song;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
