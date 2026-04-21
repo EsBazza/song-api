@@ -19,7 +19,7 @@ function getYoutubeEmbedUrl(url) {
   try {
     const u = new URL(url)
     let videoId = null
-    if (u.hostname.includes('youtube.com')) {
+    if (u.hostname === 'www.youtube.com' || u.hostname === 'youtube.com') {
       videoId = u.searchParams.get('v')
     } else if (u.hostname === 'youtu.be') {
       videoId = u.pathname.slice(1)
