@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/alonzo")
+@CrossOrigin(origins = {"https://song-ui-q24j.onrender.com", "http://localhost:5173"}, allowCredentials = "true")
 public class SongController {
 
     @Autowired
