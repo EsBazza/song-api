@@ -7,81 +7,81 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(path="/alonzo/songs")
+@RequestMapping(path = "/alonzo")
+@CrossOrigin(origins = "*")
 public class SongController {
+
     @Autowired
     private SongRepository songRepository;
 
-    @PostMapping
-    public ResponseEntity<Song> createSong(@RequestBody Song song) throws URISyntaxException {
+    @PostMapping(path = "/songs")
+    public ResponseEntity<?> addSong(@RequestBody Song song) {
         Song savedSong = songRepository.save(song);
-        return ResponseEntity.ok()
-                .location(new URI("/alonzo/songs/" + savedSong.getId()))
-                .body(savedSong);
+        return ResponseEntity.ok(savedSong);
     }
 
-    @GetMapping
+    // GET /alonzo/songs — Get all songs
+    @GetMapping(path = "/songs")
     public @ResponseBody Iterable<Song> getAllSongs() {
         return songRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<?> getSongById(@PathVariable Long id) {
+    // GET /alonzo/songs/{id} — Get a song by ID
+    @GetMapping(path = "/songs/{id}")
+    public @ResponseBody ResponseEntity<?> getSong(@PathVariable Long id) {
         Optional<Song> song = songRepository.findById(id);
-
         if (song.isPresent()) {
             return ResponseEntity.ok(song.get());
+        } else {
+            return ResponseEntity.badRequest().body("Song with ID " + id + " not found.");
         }
-
-        return ResponseEntity.status(404).body("No song found with ID: " + id);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> editSong(@PathVariable Long id, @RequestBody Song songDetails) {
-        Optional<Song> targetSong = songRepository.findById(id);
+    // PUT /alonzo/songs/{id} — Update a song by ID
+    @PutMapping(path = "/songs/{id}")
+    public ResponseEntity<?> updateSong(@PathVariable Long id, @RequestBody Song song) {
+        try {
+            Song currentSong = songRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Song with ID " + id + " not found."));
 
-        if (targetSong.isEmpty()) {
-            return ResponseEntity.status(404).body(null);
+            currentSong.setTitle(song.getTitle());
+            currentSong.setArtist(song.getArtist());
+            currentSong.setAlbum(song.getAlbum());
+            currentSong.setGenre(song.getGenre());
+            currentSong.setUrl(song.getUrl());
+
+            currentSong = songRepository.save(currentSong);
+
+            return ResponseEntity.ok(currentSong);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(e.getMessage());
         }
-
-        Song songToUpdate = targetSong.get();
-
-        songToUpdate.setTitle(songDetails.getTitle());
-        songToUpdate.setArtist(songDetails.getArtist());
-        songToUpdate.setAlbum(songDetails.getAlbum());
-        songToUpdate.setGenre(songDetails.getGenre());
-        songToUpdate.setUrl(songDetails.getUrl());
-
-        Song updatedSong = songRepository.save(songToUpdate);
-
-        return ResponseEntity.ok(updatedSong);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<String> deleteSong(@PathVariable Long id) {
+    // DELETE /alonzo/songs/{id} — Delete a song by ID
+    @DeleteMapping(path = "/songs/{id}")
+    public @ResponseBody ResponseEntity<?> deleteSong(@PathVariable Long id) {
         Optional<Song> song = songRepository.findById(id);
-
         if (song.isPresent()) {
             songRepository.deleteById(id);
             return ResponseEntity.ok("Song with ID " + id + " deleted.");
+        } else {
+            return ResponseEntity.badRequest().body("Song with ID " + id + " not found.");
         }
-
-        return ResponseEntity.status(404).body("No Song found with ID: " + id);
     }
 
-    @GetMapping("/search/{keyword}")
-    @ResponseBody
-    public ResponseEntity<List<Song>> searchSongs(@PathVariable String keyword) {
-        List<Song> results = songRepository.findByTitleContainingIgnoreCaseOrArtistContainingIgnoreCaseOrAlbumContainingIgnoreCaseOrGenreContainingIgnoreCase(
-                keyword, keyword, keyword, keyword
-        );
-
+    @GetMapping(path = "/songs/search/{key}")
+    public ResponseEntity<?> searchSong(@PathVariable String key) {
+        Iterable<Song> results = songRepository
+                .findByTitleContainingIgnoreCaseOrArtistContainingIgnoreCaseOrAlbumContainingIgnoreCaseOrGenreContainingIgnoreCase(
+                        key, key, key, key);
+        if (!results.iterator().hasNext()) {
+            return ResponseEntity.ok(new java.util.ArrayList<>());
+        }
         return ResponseEntity.ok(results);
     }
 }

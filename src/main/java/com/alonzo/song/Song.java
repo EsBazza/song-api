@@ -5,10 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 public class Song {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;
@@ -17,6 +18,7 @@ public class Song {
     private String genre;
     private String url;
 
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -30,8 +32,8 @@ public class Song {
         return title;
     }
 
-    public void setTitle(String brand) {
-        this.title = brand;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getArtist() {

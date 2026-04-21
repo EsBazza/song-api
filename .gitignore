@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Spring / Maven
 HELP.md
 target/
@@ -12,6 +13,15 @@ build/
 
 # IDEs
 ## STS
+=======
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+>>>>>>> 070aa4e (Initial backend commit with CORS fix)
 .apt_generated
 .classpath
 .factorypath
@@ -20,18 +30,28 @@ build/
 .springBeans
 .sts4-cache
 
+<<<<<<< HEAD
 ## IntelliJ IDEA
 .idea/
+=======
+### IntelliJ IDEA ###
+.idea
+>>>>>>> 070aa4e (Initial backend commit with CORS fix)
 *.iws
 *.iml
 *.ipr
 
+<<<<<<< HEAD
 ## NetBeans
+=======
+### NetBeans ###
+>>>>>>> 070aa4e (Initial backend commit with CORS fix)
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
+<<<<<<< HEAD
 
 ## VS Code
 .vscode/
@@ -43,3 +63,11 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+=======
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+>>>>>>> 070aa4e (Initial backend commit with CORS fix)
